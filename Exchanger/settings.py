@@ -7,21 +7,14 @@ env = Env() # new
 env.read_env() # new
 
 import django_heroku
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-@fy3%a6&7(c_@0311tahvs--6wa6hqnafp!+@rzd64l8cu%y$v'
 SECRET_KEY="jka-qnv$^5nstw4dxt^u=h$gbq2)%0(^s#&2iu#3lvh*(&s+@x"
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-# DEBUG = env.bool("DEBUG", default=False)
 
-# ALLOWED_HOSTS = []
+DEBUG = True
+
 ALLOWED_HOSTS = ['.herokuapp.com', 'localhost', '10.0.2.2', '127.0.0.1']
 
 CORS_ORIGIN_WHITELIST = (
@@ -30,7 +23,6 @@ CORS_ORIGIN_WHITELIST = (
 )
 CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
 
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -45,6 +37,12 @@ INSTALLED_APPS = [
     "corsheaders", # new
     'Agency',
     "drf_spectacular",
+    
+    "allauth",
+    "allauth.account", 
+    "allauth.socialaccount", 
+    "dj_rest_auth.registration",
+    "dj_rest_auth"
 ]
 
 REST_FRAMEWORK = {
@@ -57,7 +55,7 @@ REST_FRAMEWORK = {
     
     
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+    
 }
 
 MIDDLEWARE = [
@@ -90,10 +88,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'Exchanger.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
     # 'default': {
