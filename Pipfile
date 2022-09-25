@@ -16,6 +16,7 @@ django-allauth = "==0.51.0"
 drf-spectacular = "==0.23.1"
 pillow = "==9.2.0"
 dj-email-url = "==1.0.5"
+django-heroku = "==0.3.1"
 
 [dev-packages]
 
