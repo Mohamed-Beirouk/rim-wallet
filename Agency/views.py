@@ -92,26 +92,46 @@ def GetBalance(request):
         status.HTTP_200_OK
     )  
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def GetTransactionsList(request):
-    if request.method == 'POST':
-        try:
-            data = JSONParser().parse(request)
-            Password=data['Password']
-            Login=data['Login']
-            AccountId=data['id']
-            account = Account.objects.get(Password=Password, Login=Login, id=AccountId)
-        except:
-            return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':'Sorry! Check your parameters'})
+    tok=str(request.META.get('HTTP_AUTHORIZATION'))[6:]
+    try:
+        if len(tok)<1:
+            return Response(
+                {
+                    'message':'faut que vous connecter',
+                    'status': False
+                },
+                status.HTTP_200_OK
+            )
+    except:
+        return Response(
+                {
+                    'message':'erreur token',
+                    'status': False
+                },
+                status.HTTP_200_OK
+            )
+        
+    try:
+        u = Token.objects.get(key=tok).user
+        acc=Account.objects.get(user=u)
+    except:
+        return Response(
+            {
+                'message': 'client mahu 5alg',
+                'status': False
+            },
+            status.HTTP_200_OK
+        )
+    
+    # try:
+    L=Transaction.objects.filter(Account=acc)
+    serializer_get= ShowTransactionSerializer(L, many=True)
+    return Response({'status':status.HTTP_200_OK, 'Message':True, 'data':serializer_get.data})
+    # except:
+        # return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':'Check AccountId, Login, or Password'})
 
-        try:
-            L=Transaction.objects.filter(id=AccountId)
-            serializer_get= ShowTransactionSerializer(L, many=True)
-            return Response({'status':status.HTTP_200_OK, 'Message':'OK!, Check your transactions list', 'data':serializer_get.data})
-        except:
-            return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':'Check AccountId, Login, or Password'})
-    elif request.method == 'GET':
-        return Response("Get Transactions List")
 
 @api_view(['GET', 'POST'])
 def AddTransaction(request):

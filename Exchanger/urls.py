@@ -8,9 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('Agency.urls', namespace='Agency')),
     path('api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
-    
-    
-    
+
     
     #documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),

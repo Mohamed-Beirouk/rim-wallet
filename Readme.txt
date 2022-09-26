@@ -59,3 +59,13 @@ increment the security( so in every api we will send the token only, and elimina
 
 2- adding client login function and it's url
 
+
+3- update get balance function in the backend, so we can send only the token, and get the balance
+previously we have to send login, password and id !!!?
+
+4- modification get transaction list (only token correction du bug)
+
+5- upload to heroku on http://rim-wallet.herokuapp.com
+
+6- documentation avec swagger.
+

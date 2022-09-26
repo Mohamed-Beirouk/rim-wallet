@@ -15,11 +15,11 @@ class Account(models.Model):
         unique_together = ('Login', 'Password',)
 
     def __str__(self):
-        return self.Entitled
+        return self.user.first_name
         
 
 class Transaction(models.Model):
-    AccountId = models.ForeignKey(Account, on_delete=models.CASCADE)
+    Account = models.ForeignKey(Account, on_delete=models.CASCADE)
     TransactionId = models.CharField(max_length=30, unique=True)
     Note = models.CharField(max_length=100, blank=True, null=True)
     TransactionDate = models.DateTimeField(auto_now_add=True)
@@ -30,4 +30,4 @@ class Transaction(models.Model):
     Credit = models.FloatField()
     
     def __str__(self):
-        return self.TransactionId
+        return self.Account.user.first_name
