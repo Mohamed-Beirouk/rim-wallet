@@ -128,7 +128,10 @@ def GetTransactionsList(request):
     # try:
     L=Transaction.objects.filter(Account=acc)
     serializer_get= ShowTransactionSerializer(L, many=True)
-    return Response({'status':status.HTTP_200_OK, 'Message':True, 'data':serializer_get.data})
+    return Response(
+        serializer_get.data,
+        status.HTTP_200_OK
+        )
     # except:
         # return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':'Check AccountId, Login, or Password'})
 
