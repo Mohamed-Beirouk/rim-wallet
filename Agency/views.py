@@ -61,24 +61,36 @@ class Transactions(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
 
-@api_view(['GET', 'POST'])
+@api_view([ 'POST'])
 def GetBalance(request):
-    if request.method == 'POST':
-        try:
-            data = JSONParser().parse(request)
-            Password=data['Password']
-            Login=data['Login']
-            AccountId=data['id']
-        except:
-            return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':'Sorry! Check your parameters'})
-        try:
-            sold = Account.objects.get(Password=Password, Login=Login, id=AccountId)
-            serializer_get= sold.Balance
-            return Response({'status':status.HTTP_200_OK, 'Message':'Great! Check Your Balance', 'Balance':serializer_get})
-        except Account.DoesNotExist:
-            return Response({'status':status.HTTP_404_NOT_FOUND, 'Message':"This Account Does Not Found"}) 
-    elif request.method == 'GET':
-        return Response("Check Balance")
+    tok=str(request.META.get('HTTP_AUTHORIZATION'))[6:]
+    if len(tok)<1:
+        return Response(
+            {
+                'message':'faut que vous connecter',
+                'status': False
+            },
+            status.HTTP_200_OK
+        )
+    try:
+        u = Token.objects.get(key=tok).user
+        acc=Account.objects.get(user=u)
+    except:
+        return Response(
+            {
+                'message': 'client mahu 5alg',
+                'status': False
+            },
+            status.HTTP_200_OK
+        )
+    
+    return Response(
+        {
+            'status': True,
+            'balance':acc.Balance
+        },
+        status.HTTP_200_OK
+    )  
 
 @api_view(['GET', 'POST'])
 def GetTransactionsList(request):
@@ -155,8 +167,8 @@ def AddTransaction(request):
     
 #-------------------------
 # ce que j'ai augmentee
-#------------------------
 
+#------------------------
 
 @api_view(['POST'])
 def loginclient(request):
@@ -169,7 +181,7 @@ def loginclient(request):
         return Response(
             {
                 'status': False,
-                'message': 'no client for this information',
+                'message': 'no account for this information',
                 'data': null
             },
             status.HTTP_200_OK
@@ -200,9 +212,10 @@ def loginclient(request):
         return Response(
             {
                 'status': False,
-                'message': 'no client for this information',
+                'message': 'no account for this information',
                 'data': null
             },
             status.HTTP_200_OK
         )
+ 
  
