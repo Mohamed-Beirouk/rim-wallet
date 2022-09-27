@@ -1,3 +1,4 @@
+from random import Random
 from django.shortcuts import render, redirect
 import requests
 from .models import *
@@ -16,7 +17,8 @@ from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-
+import string
+import random
 
 
 # Create your views here.
@@ -136,54 +138,93 @@ def GetTransactionsList(request):
         # return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':'Check AccountId, Login, or Password'})
 
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def AddTransaction(request):
-    if request.method == 'POST':
-        try:
-            data = JSONParser().parse(request)
-            Password=data['Password']
-            Login=data['Login']
-            AccountId=data['AccountId']
-            Currency = data['Currency'] if data['Currency'] else 1
-            Output = data['Output'] if data['Output'] else 0
-            Input = data['Input'] if data['Input'] else 0
-            TransactionId=data['TransactionId']
-            Note=data['Note']
-            CustomerFullName=data['CustomerFullName']
-
-        except:
-            return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':"Sorry! Check your parameters"})
-        try:
-            account = Account.objects.get(Password=Password, Login=Login, id=AccountId)
-        except Account.DoesNotExist:
-            return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':'Sorry! Check your AccountId, Login, Or Password'})
-        account = Account.objects.get(id=AccountId)
-        account_balance = account.Balance
+    tok=str(request.META.get('HTTP_AUTHORIZATION'))[6:]
+    try:
+        if len(tok)<1:
+            return Response(
+                {
+                    'message':'faut que vous connecter',
+                    'status': False
+                },
+                status.HTTP_200_OK
+            )
+    except:
+        return Response(
+                {
+                    'message':'erreur token',
+                    'status': False
+                },
+                status.HTTP_200_OK
+            )
         
-        if(account_balance < Output):
-            return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':"Your balance is not enough"})
-        else:
-            Credit = account_balance + (Input - Output) * Currency
-        mydata= {
-            "TransactionId": TransactionId,
-            "Note": Note,
-            "CustomerFullName": CustomerFullName,
-            "Output": Output,
-            "Input": Input,
-            "Currency": Currency,
-            "AccountId": AccountId,
-            "Credit": Credit
-        }
-        serializer=AddTransactionSerializer(data=mydata)
-        if serializer.is_valid():
-            serializer.save()
-            account.Balance=Credit
-            account.save()
-            return Response({'status':status.HTTP_200_OK, 'Message':'OK! your transaction added succesfully', 'data':serializer.data})
-        else:
-            return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':"Sorry! please check your inputs"})
-    elif request.method == 'GET':
-        return Response("Add a Transaction")
+    try:
+        u = Token.objects.get(key=tok).user
+        acc=Account.objects.get(user=u)
+    except:
+        return Response(
+            {
+                'message': 'client mahu 5alg',
+                'status': False
+            },
+            status.HTTP_200_OK
+        )
+    
+    try:
+        data = JSONParser().parse(request)
+        
+        CustomerFullName=data['CustomerFullName']
+        Note=data['Note']
+        Currency = data['Currency'] if data['Currency'] else 1
+        Output = data['Output'] if data['Output'] else 0
+        Input = data['Input'] if data['Input'] else 0
+        
+
+    except:
+        return Response(
+            {
+                'status':status.HTTP_400_BAD_REQUEST, 
+                'Message':"Sorry! Check your parameters"
+            }
+            )
+    
+    account_balance = acc.Balance
+    
+    if(account_balance < Output):
+        return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':"Your balance is not enough"})
+    else:
+        Credit = account_balance + (Input - Output) * Currency
+    acc.Balance = Credit
+    acc.save()  
+    characters = string.ascii_letters + string.digits + string.punctuation
+    blabla = ''.join(random.choice(characters) for i in range(10))
+    
+    mydata= {
+        "TransactionId": blabla,
+        "Note": Note,
+        "CustomerFullName": CustomerFullName,
+        "Output": Output,
+        "Input": Input,
+        "Currency": Currency,
+        "AccountId": acc.id,
+        "Credit": Credit
+    }
+    try:
+        t = Transaction.objects.create(Account=acc,TransactionId=blabla,Note=Note,CustomerFullName=CustomerFullName,Output=Output,Input=Input,Currency=Currency,Credit=Credit)
+        t.save()
+        return Response(
+                {
+                    'message':'cbn',
+                    'status': True
+                },
+                status.HTTP_200_OK
+            )
+    except:
+        return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':"Unknown"})
+    
+    
+
     
     
     
