@@ -146,6 +146,7 @@ def AddTransaction(request):
         if len(tok)<1:
             return Response(
                 {
+                    
                     'message':'faut que vous connecter',
                     'status': False
                 },
@@ -230,7 +231,8 @@ def AddTransaction(request):
         t.save()
         return Response(
                 {
-                    'message':'cbn',
+                    'message':'cbn, 4ak sla7 ',
+                    'balance':Credit,
                     'status': True
                 },
                 status.HTTP_200_OK
