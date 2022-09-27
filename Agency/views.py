@@ -21,6 +21,7 @@ import string
 import random
 
 
+
 # Create your views here.
 class UserRecordView(APIView):
     """
@@ -167,7 +168,7 @@ def AddTransaction(request):
             {
                 'message': 'client mahu 5alg',
                 'status': False
-            },
+            },  
             status.HTTP_200_OK
         )
     
@@ -176,9 +177,14 @@ def AddTransaction(request):
         
         CustomerFullName=data['CustomerFullName']
         Note=data['Note']
-        Currency = data['Currency'] if data['Currency'] else 1
-        Output = data['Output'] if data['Output'] else 0
-        Input = data['Input'] if data['Input'] else 0
+        
+        
+        Currenc = data['Currency'] if data['Currency'] else 1
+        Currency=float(Currenc)
+        Outpu = data['Output']if data['Output'] else 0
+        Output=float(Outpu)
+        Inpu = data['Input'] if data['Input'] else 0
+        Input=float(Inpu)
         
 
     except:
