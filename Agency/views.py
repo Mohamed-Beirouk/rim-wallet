@@ -183,16 +183,25 @@ def AddTransaction(request):
 
     except:
         return Response(
-            {
-                'status':status.HTTP_400_BAD_REQUEST, 
-                'Message':"Sorry! Check your parameters"+CustomerFullName+Note+Currency+Output+Input
-            }
-            )
+                {
+                    'message':"Sorry! Check your parameters"+CustomerFullName+Note+Currency+Output+Input,
+           
+                    'status': False
+                },
+                status.HTTP_200_OK
+            ) 
     
     account_balance = acc.Balance
     
     if(account_balance < Output):
-        return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':"Your balance is not enough"})
+         return Response(
+                {
+                    'message':"Baance mahu kavi",
+           
+                    'status': False
+                },
+                status.HTTP_200_OK
+            ) 
     else:
         Credit = account_balance + (Input - Output) * Currency
     acc.Balance = Credit
@@ -221,7 +230,14 @@ def AddTransaction(request):
                 status.HTTP_200_OK
             )
     except:
-        return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':"Unknown"})
+        return Response(
+                {
+                    'message':"No body knows",
+           
+                    'status': False
+                },
+                status.HTTP_200_OK
+            ) 
     
     
 
