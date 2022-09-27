@@ -185,7 +185,7 @@ def AddTransaction(request):
         return Response(
             {
                 'status':status.HTTP_400_BAD_REQUEST, 
-                'Message':"Sorry! Check your parameters"
+                'Message':"Sorry! Check your parameters"+CustomerFullName+Note+Currency+Output+Input
             }
             )
     
