@@ -128,15 +128,15 @@ def GetTransactionsList(request):
             status.HTTP_200_OK
         )
     
-    # try:
-    L=Transaction.objects.filter(Account=acc)
-    serializer_get= ShowTransactionSerializer(L, many=True)
-    return Response(
-        serializer_get.data,
-        status.HTTP_200_OK
-        )
-    # except:
-        # return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':'Check AccountId, Login, or Password'})
+    try:
+        L=Transaction.objects.filter(Account=acc).order_by('-TransactionDate')
+        serializer_get= ShowTransactionSerializer(L, many=True)
+        return Response(
+            serializer_get.data,
+            status.HTTP_200_OK
+            )
+    except:
+        return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':'Check AccountId, Login, or Password'})
 
 
 @api_view(['POST'])
@@ -178,7 +178,6 @@ def AddTransaction(request):
         
         CustomerFullName=data['CustomerFullName']
         Note=data['Note']
-        
         
         Currenc = data['Currency'] if data['Currency'] else 1
         Currency=float(Currenc)
@@ -307,3 +306,46 @@ def loginclient(request):
         )
  
  
+
+@api_view(['POST'])
+def GetTransactionsListLastFive(request):
+    tok=str(request.META.get('HTTP_AUTHORIZATION'))[6:]
+    try:
+        if len(tok)<1:
+            return Response(
+                {
+                    'message':'faut que vous connecter',
+                    'status': False
+                },
+                status.HTTP_200_OK
+            )
+    except:
+        return Response(
+                {
+                    'message':'erreur token',
+                    'status': False
+                },
+                status.HTTP_200_OK
+            )
+        
+    try:
+        u = Token.objects.get(key=tok).user
+        acc=Account.objects.get(user=u)
+    except:
+        return Response(
+            {
+                'message': 'client mahu 5alg',
+                'status': False
+            },
+            status.HTTP_200_OK
+        )
+    
+    try:
+        L=Transaction.objects.filter(Account=acc).order_by('-TransactionDate')[:5]
+        serializer_get= ShowTransactionSerializer(L, many=True)
+        return Response(
+            serializer_get.data,
+            status.HTTP_200_OK
+            )
+    except:
+        return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':'Check AccountId, Login, or Password'})

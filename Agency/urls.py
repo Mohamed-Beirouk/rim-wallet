@@ -19,5 +19,8 @@ urlpatterns = [
     path("GetBalance/", views.GetBalance, name="Get Balance"),
     path("AddTransaction/", views.AddTransaction, name="Add a Transaction"),
     path("TransactionsList/", views.GetTransactionsList, name="Get Transactions List"),
+    
+    #GetTransactionsListLastFive
+    path("GetTransactionsListLastFive/", views.GetTransactionsListLastFive, name="Get Transactions List Last Five"),
     path("login/", loginclient, name="Get Transactions List"),
 ]
