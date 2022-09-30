@@ -90,7 +90,8 @@ def GetBalance(request):
     return Response(
         {
             'status': True,
-            'balance':acc.Balance
+            'balance':acc.Balance,
+            'currency':acc.currency
         },
         status.HTTP_200_OK
     )  
@@ -232,7 +233,8 @@ def AddTransaction(request):
                 {
                     'message':'cbn, 4ak sla7 ',
                     'balance':Credit,
-                    'status': True
+                    'status': True,
+                    'currency':acc.currency
                 },
                 status.HTTP_200_OK
             )
@@ -290,7 +292,8 @@ def loginclient(request):
                 'message':'login success',
                 'data':{
                     'Balance':client.Balance,
-                    'full_name':client.user.first_name+" "+client.user.last_name
+                    'full_name':client.user.first_name+" "+client.user.last_name,
+                    'currency':client.currency
                 }
             },
             status.HTTP_200_OK
