@@ -1,3 +1,4 @@
+from email.policy import default
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
@@ -10,7 +11,7 @@ class Account(models.Model):
     CreationDate = models.DateTimeField(auto_now_add=True)
     Login = models.CharField(max_length=10)
     Password = models.CharField(max_length=4)
-
+    currency = models.CharField(max_length=30, default="MRU") 
     class Meta:
         unique_together = ('Login', 'Password',)
 
