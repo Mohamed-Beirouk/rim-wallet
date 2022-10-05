@@ -200,10 +200,10 @@ def AddTransaction(request):
     
     account_balance = acc.Balance
     
-    if(account_balance < Output):
+    if(account_balance < (Output*Currenc)):
          return Response(
                 {
-                    'message':"Baance mahu kavi",
+                    'message':"Baance insuffisant",
            
                     'status': False
                 },
