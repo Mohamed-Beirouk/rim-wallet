@@ -91,7 +91,9 @@ def GetBalance(request):
         {
             'status': True,
             'balance':acc.Balance,
-            'currency':acc.currency
+            'currency':acc.currency,
+            'fullname':acc.user.first_name+" "+acc.user.last_name,
+            'email':acc.user.email
         },
         status.HTTP_200_OK
     )  
