@@ -351,3 +351,75 @@ def GetTransactionsListLastFive(request):
             )
     except:
         return Response({'status':status.HTTP_400_BAD_REQUEST, 'Message':'Check AccountId, Login, or Password'})
+
+
+
+@api_view(['POST'])
+def UpdateReceived(request):
+    tok=str(request.META.get('HTTP_AUTHORIZATION'))[6:]
+    try:
+        if len(tok)<1:
+            return Response(
+                { 
+                    'message':'faut que vous connecter',
+                    'status': False
+                },
+                status.HTTP_200_OK)
+    except:
+        return Response(
+                {
+                    'message':'erreur token',
+                    'status': False
+                },
+                status.HTTP_200_OK)
+    try:
+        u = Token.objects.get(key=tok).user
+        acc=Account.objects.get(user=u)
+    except:
+        return Response(
+            {
+                'message': 'Le donnees sont invalides',
+                'status': False
+            },  
+            status.HTTP_200_OK
+        )
+    
+    try:
+        data = JSONParser().parse(request)
+        recu=data['recu']
+        id=data['id']
+    except:
+        return Response(
+                {
+                    'message':"Invalid data",
+                    'status': False
+                },
+                status.HTTP_200_OK
+            ) 
+    try:
+        t = Transaction.objects.get(id=id) 
+        t.recu=recu
+        t.save()
+    except:
+        return Response(
+                {
+                    'message':"La transaction introuvable",
+                    'status': False
+                },
+                status.HTTP_200_OK
+            ) 
+    return Response(
+                {
+                    'message':"Done",
+                    'status': True
+                },
+                status.HTTP_200_OK
+            ) 
+
+
+
+
+# Détails d'une transaction
+
+
+# Impression pdf
