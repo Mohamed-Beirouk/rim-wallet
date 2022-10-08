@@ -29,6 +29,7 @@ class Transaction(models.Model):
     Input = models.FloatField(blank=True, null=True)
     Currency = models.FloatField()
     Credit = models.FloatField()
+    recu = models.CharField(max_length=10 ,default="False")
     
     def __str__(self):
         return self.Account.user.first_name

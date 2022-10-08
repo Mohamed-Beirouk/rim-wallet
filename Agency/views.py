@@ -60,7 +60,7 @@ class Accounts(viewsets.ModelViewSet):
     serializer_class = AccountSerializer
 
 class Transactions(viewsets.ModelViewSet):
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
 
@@ -146,29 +146,25 @@ def AddTransaction(request):
     try:
         if len(tok)<1:
             return Response(
-                {
-                    
+                { 
                     'message':'faut que vous connecter',
                     'status': False
                 },
-                status.HTTP_200_OK
-            )
+                status.HTTP_200_OK)
     except:
         return Response(
                 {
                     'message':'erreur token',
                     'status': False
                 },
-                status.HTTP_200_OK
-            )
-        
+                status.HTTP_200_OK)
     try:
         u = Token.objects.get(key=tok).user
         acc=Account.objects.get(user=u)
     except:
         return Response(
             {
-                'message': 'client mahu 5alg',
+                'message': 'Le donnees sont invalides',
                 'status': False
             },  
             status.HTTP_200_OK
@@ -191,7 +187,8 @@ def AddTransaction(request):
     except:
         return Response(
                 {
-                    'message':"Sorry! Check your parameters"+CustomerFullName+Note+Currency+Output+Input,
+                    'message':"Sorry! Check your parameters",
+                    #+CustomerFullName+Note+Currency+Output+Input,
            
                     'status': False
                 },
@@ -200,10 +197,10 @@ def AddTransaction(request):
     
     account_balance = acc.Balance
     
-    if(account_balance < (Output*Currenc)):
+    if(account_balance < (Output*Currency) or account_balance < (Input*Currency)):
          return Response(
                 {
-                    'message':"Baance insuffisant",
+                    'message':"Solde insiffusant",
            
                     'status': False
                 },

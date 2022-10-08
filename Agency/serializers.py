@@ -30,12 +30,17 @@ class UserSerializer(serializers.ModelSerializer):
 class ShowTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
-            "TransactionDate",
+            "id",
+            "TransactionId",
             "CustomerFullName",
             "Input",
             "Output",
-            "Note"
-            # "Credit"
+            "Note",
+            "TransactionDate",
+            "Currency",
+            "Credit",
+            "recu",
+            "Account"
         )
         model = Transaction
 
