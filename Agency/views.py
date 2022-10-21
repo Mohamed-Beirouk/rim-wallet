@@ -185,6 +185,8 @@ def AddTransaction(request):
         Inpu = data['Input'] if data['Input'] else 0
         Input=float(Inpu)
         
+        Currencyname=data['CurrencyName']
+        
 
     except:
         return Response(
@@ -226,7 +228,7 @@ def AddTransaction(request):
         "Credit": Credit
     }
     try:
-        t = Transaction.objects.create(Account=acc,TransactionId=blabla,Note=Note,CustomerFullName=CustomerFullName,Output=Output,Input=Input,Currency=Currency,Credit=Credit)
+        t = Transaction.objects.create(Account=acc,TransactionId=blabla,Note=Note,CustomerFullName=CustomerFullName,Output=Output,Input=Input,Currency=Currency,Credit=Credit,CurrencyName=Currencyname)
         t.save()
         return Response(
                 {
@@ -411,7 +413,11 @@ def UpdateReceived(request):
     return Response(
                 {
                     'message':"Done",
-                    'status': True
+                    'status': True,
+                    'Balance':acc.Balance,
+                    'full_name':acc.user.first_name+" "+acc.user.last_name,
+                    'currency':acc.currency,
+                    'recu':t.recu
                 },
                 status.HTTP_200_OK
             ) 
