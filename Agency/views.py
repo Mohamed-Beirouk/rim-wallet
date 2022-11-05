@@ -202,6 +202,7 @@ def AddTransaction(request):
     account_balance = acc.Balance
     
     if(account_balance < (Output*Currency) or account_balance < (Input*Currency)):
+        
          return Response(
                 {
                     'message':"Solde insiffusant",
@@ -338,7 +339,7 @@ def GetTransactionsListLastFive(request):
     except:
         return Response(
             {
-                'message': 'client mahu 5alg',
+                'message': 'client Unfound',
                 'status': False
             },
             status.HTTP_200_OK
